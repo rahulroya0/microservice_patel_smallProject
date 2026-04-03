@@ -1,35 +1,42 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import CreateComment from "./CreateComment";
 
 const CreateSnippet = () => {
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
+  const [snippets, setSnippets] = useState({});
 
   const createSnippet = async (e) => {
     e.preventDefault();
     try {
-      const { data } =await axios.post("http://localhost:8000/api/v1/snippet",{title,code});
-      console.log(data);
+      const {data}=await axios.post("http://localhost:8000/api/v1/snippet", { title, code });
+      alert(data.message)
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   };
 
-  useEffect(()=>{
-    const fetchSnippets=async()=>{
-        try{
-            const res= await axios.get("http://localhost:8000/api/v1/snippet");
-            console.log("all the data", res.data);
-        }catch(error){
-            console.log("This is the error",error);
-        }
-    }
+  useEffect(() => {
+    const fetchSnippets = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/snippet");
+        console.log("all the data", res.data);
+        setSnippets(res.data);
+      } catch (error) {
+        console.log("This is the error", error);
+      }
+    };
     fetchSnippets();
-  },[])
+  }, []);
 
   return (
     <div className="mt-10">
-      <form onSubmit={createSnippet} action="" className="flex flex-col space-y-4">
+      <form
+        onSubmit={createSnippet}
+        action=""
+        className="flex flex-col space-y-4"
+      >
         <input
           type="text"
           placeholder="Title"
@@ -45,10 +52,21 @@ const CreateSnippet = () => {
           onChange={(e) => setCode(e.target.value)}
           className="border rounded px-2 py-1"
         ></textarea>
-        <button type="submit" className="w-fit bg-black text-white px-4 py-2 rounded cursor-pointer">
+        <button
+          type="submit"
+          className="w-fit bg-black text-white px-4 py-2 rounded cursor-pointer"
+        >
           Add
         </button>
       </form>
+      <div className="mt-5 grid md:grid-cols-3 gap-2">
+        {Object.values(snippets).map((snippet) => (
+          <div className="p-3 border rounded" key={snippet.id}>
+            <h1 className="font-bold text-xl">{snippet.title}</h1>
+            <CreateComment snippetId={snippet.id}/>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

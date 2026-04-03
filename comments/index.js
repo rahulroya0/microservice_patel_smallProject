@@ -10,8 +10,8 @@ app.use(cors({
     credentials:true
 }))
 
-app.use("/api/v1/snippet",router)
+app.use("/api/v1/comment",router)
 
 app.listen(8001,()=>{
-    console.log("server is listening on port 8000")
+    console.log("server is listening on port 8001")
 })
